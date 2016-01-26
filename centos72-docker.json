@@ -10,5 +10,6 @@
   "iso_url": "http://mirrors.sonic.net/centos/7.2.1511/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso",
   "kickstart": "ks7.cfg",
   "memory": "1024",
-  "parallels_guest_os_type": "centos7"
+  "parallels_guest_os_type": "centos7",
+  "vagrantfile_template": "tpl/vagrantfile-centos72-docker-consul.tpl"
 }
