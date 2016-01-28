@@ -4,7 +4,7 @@ if [[ ! "$DOCKER" =~ ^(true|yes|on|1|TRUE|YES|ON])$ ]]; then
   exit
 fi
 
-yum -y install unzip iptables-services
+yum -y install unzip
 cd /tmp
 wget https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip
 unzip consul_0.6.3_linux_amd64.zip
@@ -18,11 +18,6 @@ cd /usr/share/consul
 unzip /tmp/consul_0.6.3_web_ui.zip
 rm -f /tmp/consul_0.6.3_web_ui.zip
 
-echo net.ipv4.conf.eth0.route_localnet=1 >> /etc/sysctl.conf
-iptables -t nat -I PREROUTING -p tcp --dport 8500 -j DNAT --to 127.0.0.1:8500
-service iptables save
-systemctl enable iptables
-
 #echo consul agent   \& >> /etc/rc.d/rc.local
 # echo consul agent -server -bootstrap -data-dir /tmp/consul -advertise=127.0.0.1 \& >> /etc/rc.d/rc.local
 #chmod a+x /etc/rc.d/rc.local
@@ -30,13 +25,14 @@ mkdir -p /etc/consul.d
 
 cat <<_EOF_ | cat > /etc/consul.d/consul.json
 {
+    "advertise_addr": "127.0.0.1",
+    "client_addr": "0.0.0.0",
     "bootstrap": true,
     "server": true,
     "data_dir": "/tmp/consul",
     "log_level": "INFO",
     "datacenter": "dkr2",
     "ui_dir": "/usr/share/consul",
-    "advertise_addr": "127.0.0.1",
     "enable_syslog": true
 }
 _EOF_
