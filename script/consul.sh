@@ -18,9 +18,7 @@ cd /usr/share/consul
 unzip /tmp/consul_0.6.3_web_ui.zip
 rm -f /tmp/consul_0.6.3_web_ui.zip
 
-#echo consul agent   \& >> /etc/rc.d/rc.local
-# echo consul agent -server -bootstrap -data-dir /tmp/consul -advertise=127.0.0.1 \& >> /etc/rc.d/rc.local
-#chmod a+x /etc/rc.d/rc.local
+echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 mkdir -p /etc/consul.d
 
 cat <<_EOF_ | cat > /etc/consul.d/consul.json
