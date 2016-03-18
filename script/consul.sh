@@ -4,7 +4,7 @@ if [[ ! "$DOCKER" =~ ^(true|yes|on|1|TRUE|YES|ON])$ ]]; then
   exit
 fi
 
-yum -y install unzip
+yum -y install unzip bind-utils
 cd /tmp
 wget https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip
 unzip consul_0.6.3_linux_amd64.zip
@@ -35,6 +35,34 @@ cat <<_EOF_ | cat > /etc/consul.d/consul.json
 }
 _EOF_
 
+cat <<_EOF_ | cat > /etc/consul.d/ns-text-connect-docker-engine.json
+{
+    "service": {
+        "name": "ns-text-connect-docker-engine",
+        "id": "ns-text-connect-docker-engine",
+        "tags": [ "docker-engine", "textconnect"],
+        "checks": [
+            {
+                "id": "docker-health",
+                "script": "/opt/textconnect/docker-engine/docker-is-up.sh",
+                "interval": "10s"
+            },
+            {
+                "id": "docker-registrator",
+                "script": "/opt/textconnect/docker-engine/registrator-is-up.sh",
+                "interval": "10s"
+            }
+        ]
+    }
+}
+_EOF_
+
+mkdir -p /opt/textconnect/docker-engine/
+wget -O /opt/textconnect/docker-engine/docker-is-up.sh https://gist.githubusercontent.com/joshrivers/0e333f8e2eaf21ea0135/raw/17f1a0a76c692134ea0cfbe8f8910b6b16ac3995/docker-is-up.sh
+chmod 755 /opt/textconnect/docker-engine/docker-is-up.sh
+wget -O /opt/textconnect/docker-engine/registrator-is-up.sh https://gist.githubusercontent.com/joshrivers/66452e8685dd2294877c/raw/196d1d497d1e3ca604fea31bfcb20bde68957d6d/registrator-is-up.sh
+chmod 755 /opt/textconnect/docker-engine/registrator-is-up.sh
+
 cat <<_EOF_ | cat > /etc/systemd/system/consul.service
 [Unit]
 Description=Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
@@ -60,18 +88,3 @@ _EOF_
 systemctl enable consul
 
 
-# echo "==> Run the Docker installation script"
-# curl -sSL https://get.docker.com | sh
-
-# echo "==> Create the docker group"
-# # Add the docker group if it doesn't already exist
-# groupadd docker
-
-# echo "==> Add the connected "${USER}" to the docker group."
-# gpasswd -a ${USER} docker
-# gpasswd -a ${SSH_USERNAME} docker
-
-# echo "==> Starting docker"
-# service docker start
-# echo "==> Enabling docker to start on reboot"
-# chkconfig docker on

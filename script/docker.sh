@@ -65,6 +65,7 @@ cp "\$CERT" "\$USERCFG"
 cp "\$KEY" "\$USERCFG"
 chown -R vagrant:vagrant "\$USERCFG"
 
+echo "Generating Dockerhost file"
 mkdir -p /dockerhost
 chmod 755 /dockerhost
 /usr/local/bin/jq -n \
@@ -73,7 +74,9 @@ chmod 755 /dockerhost
 --arg eipaddr \$(ifconfig eth0|grep -Po 'inet \K[\d.]+') \
 '{"hostname":\$hostname, "fqdn":\$fqdn, "externalIp":\$eipaddr}' \
 > /dockerhost/hostinfo.json
+echo "Starting Docker"
 service docker restart >/dev/null 2>&1 
+echo "Docker Started"
 _EOF_
 chmod 755 /usr/local/src/docker/docker-init.sh
 
