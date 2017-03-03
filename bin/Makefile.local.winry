@@ -1,4 +1,4 @@
-ISO_PATH := file:///Volumes/Thunder/software/centos
+ISO_PATH := file:///software
 
 VIRTUALBOX_VERSION := $(shell virtualbox --help | head -n 1 | awk '{print $$NF}')
 VMWARE_VERSION := 9.9.3

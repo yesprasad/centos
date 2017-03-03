@@ -6,17 +6,17 @@ fi
 
 yum -y install unzip bind-utils
 cd /tmp
-wget https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip
-unzip consul_0.6.3_linux_amd64.zip
+wget https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip
+unzip consul_0.6.4_linux_amd64.zip
 mv consul /usr/bin
-rm -f /tmp/consul_0.6.3_linux_amd64.zip
+rm -f /tmp/consul_0.6.4_linux_amd64.zip
 
 cd /tmp
-wget https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_web_ui.zip
+wget https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_web_ui.zip
 mkdir -p /usr/share/consul
 cd /usr/share/consul
-unzip /tmp/consul_0.6.3_web_ui.zip
-rm -f /tmp/consul_0.6.3_web_ui.zip
+unzip /tmp/consul_0.6.4_web_ui.zip
+rm -f /tmp/consul_0.6.4_web_ui.zip
 
 echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
 mkdir -p /etc/consul.d
@@ -60,8 +60,14 @@ _EOF_
 mkdir -p /opt/textconnect/docker-engine/
 wget -O /opt/textconnect/docker-engine/docker-is-up.sh https://gist.githubusercontent.com/joshrivers/0e333f8e2eaf21ea0135/raw/17f1a0a76c692134ea0cfbe8f8910b6b16ac3995/docker-is-up.sh
 chmod 755 /opt/textconnect/docker-engine/docker-is-up.sh
-wget -O /opt/textconnect/docker-engine/registrator-is-up.sh https://gist.githubusercontent.com/joshrivers/66452e8685dd2294877c/raw/196d1d497d1e3ca604fea31bfcb20bde68957d6d/registrator-is-up.sh
+wget -O /opt/textconnect/docker-engine/registrator-is-up.sh https://gist.githubusercontent.com/joshrivers/66452e8685dd2294877c/raw/6c48dd97065920b069a37844cef92a362991ef56/registrator-is-up.sh
 chmod 755 /opt/textconnect/docker-engine/registrator-is-up.sh
+
+cd /tmp
+wget https://github.com/CiscoCloud/consul-cli/releases/download/v0.3.1/consul-cli_0.3.1_linux_amd64.tar.gz
+tar xfvz consul-cli_0.3.1_linux_amd64.tar.gz
+mv consul-cli_0.3.1_linux_amd64/consul-cli /usr/bin
+rm -f /tmp/consul-cli_0.3.1_linux_amd64.tar.gz
 
 cat <<_EOF_ | cat > /etc/systemd/system/consul.service
 [Unit]
